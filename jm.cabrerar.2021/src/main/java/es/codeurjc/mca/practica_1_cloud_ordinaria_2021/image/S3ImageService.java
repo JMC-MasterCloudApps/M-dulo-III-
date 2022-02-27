@@ -4,6 +4,9 @@ import static java.lang.System.getProperty;
 import static software.amazon.awssdk.core.sync.RequestBody.fromFile;
 
 import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchBucketException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -74,7 +78,23 @@ public class S3ImageService implements ImageService {
 
     @Override
     public void deleteImage(String image) {
-        // Not implemented yet
+
+        try {
+            log.info("Deleting image from S3");
+            String[] tokens = image.split("/");
+            String imageName = tokens[tokens.length - 1];
+
+            var deleteRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(imageName)
+                .build();
+
+            s3.deleteObject(deleteRequest);
+
+        } catch (Exception e) {
+            log.error("While deleting S3 image", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot delete S3 image");
+        }
     }
 
     private void createBucket(String bucketName) {
