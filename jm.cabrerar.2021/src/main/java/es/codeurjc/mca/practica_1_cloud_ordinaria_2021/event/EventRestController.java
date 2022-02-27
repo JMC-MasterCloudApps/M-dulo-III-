@@ -1,5 +1,7 @@
 package es.codeurjc.mca.practica_1_cloud_ordinaria_2021.event;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 import java.util.Collection;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -40,16 +42,16 @@ public class EventRestController{
 
 	@PostMapping("/")
 	@JsonView(Event.BasicAtt.class)
-	public ResponseEntity<Event> createEvent(EventDto eventDto) throws Exception{	
+	public ResponseEntity<Event> createEvent(EventDto eventDto) {
 		Event createdEvent = eventService.createEvent(eventDto);
-		return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+		return new ResponseEntity<>(createdEvent, CREATED);
 	}
 
 	@PutMapping("/")
 	@JsonView(Event.BasicAtt.class)
 	public ResponseEntity<Event> updateEvent(@RequestBody Event event) throws Exception {
 		Event createdEvent = eventService.updateEvent(event);
-		return new ResponseEntity<>(createdEvent, HttpStatus.CREATED);
+		return new ResponseEntity<>(createdEvent, CREATED);
 	}
 
 	@DeleteMapping("/{id}")

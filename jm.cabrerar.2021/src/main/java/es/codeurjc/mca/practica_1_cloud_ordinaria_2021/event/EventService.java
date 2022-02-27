@@ -1,5 +1,7 @@
 package es.codeurjc.mca.practica_1_cloud_ordinaria_2021.event;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 import java.util.Collection;
 import java.util.Optional;
 
@@ -59,7 +61,7 @@ public class EventService {
 
         return eventRepository.save(event);
     }
-    
+
     @Transactional
     public Event bookTicket(Long eventId) {
 
@@ -106,7 +108,7 @@ public class EventService {
     public Event updateEvent(Event event){
         Event oldEvent = checkEventExistAndGet(event.getId());
         if(event.getMax_capacity() < oldEvent.getMax_capacity()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You can't reduce max capacity of the event");
+            throw new ResponseStatusException(BAD_REQUEST, "You can't reduce max capacity of the event");
         }
 
         // Update certain fields
@@ -119,11 +121,10 @@ public class EventService {
     }
 
     private Event checkEventExistAndGet(long eventId){
+
         Optional<Event> opEvent = eventRepository.findById(eventId);
-        if (!opEvent.isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Event not longer exist");
-        }
-        return opEvent.get();
+
+        return opEvent.orElseThrow(() -> new ResponseStatusException(BAD_REQUEST, "Event not longer exist"));
     }
-    
+
 }

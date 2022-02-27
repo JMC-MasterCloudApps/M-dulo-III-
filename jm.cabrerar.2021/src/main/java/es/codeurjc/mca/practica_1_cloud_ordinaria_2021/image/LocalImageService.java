@@ -27,16 +27,19 @@ public class LocalImageService implements ImageService {
 
     @Override
     public String createImage(MultipartFile multiPartFile) {
-        String fileName = "image_" + UUID.randomUUID() + "_" +multiPartFile.getOriginalFilename();
-        String path = "events/"+ fileName;
-        File file = new File(staticFolder() + path);
+
         try {
+            final var fileName = "image_" + UUID.randomUUID() + "_" +multiPartFile.getOriginalFilename();
+            final var path = "events/" + fileName;
+            var file = new File(staticFolder() + path);
             multiPartFile.transferTo(file);
+            final var baseUrl =  ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+
+            return baseUrl + "/" + path;
+
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't save image locally", ex);
-        } 
-        final String baseUrl =  ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        return baseUrl + "/" + path;
+        }
     }
 
     @Override
