@@ -94,15 +94,6 @@
 			<version>${aws.java.sdk.version}</version>
 		</dependency>
 
-
-		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-rds -->
-		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk-rds</artifactId>
-			<version>1.12.167</version>
-		</dependency>
-
-
 		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
